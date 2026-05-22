@@ -1,0 +1,281 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		265A6111EF9B2ACB8E830D36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7415F59EFD700F693187D92E /* Assets.xcassets */; };
+		4B7E9B05320B86064548A478 /* UltramarAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9598168D0B3D4C5CE2FA59F8 /* UltramarAIApp.swift */; };
+		438BC6CA262857A23B53198B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCBDAC6235746F8F45AB972 /* AppDelegate.swift */; };
+		4C109B381C1B8D646B0724F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0428C438EC5B64399F488C0B /* ContentView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E503437955239873A7219841 /* UltramarAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltramarAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7415F59EFD700F693187D92E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9598168D0B3D4C5CE2FA59F8 /* UltramarAIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltramarAIApp.swift; sourceTree = "<group>"; };
+		AFCBDAC6235746F8F45AB972 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0428C438EC5B64399F488C0B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5A9D734AC08BBC73120D63A5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		59956219C2B9A330EF2B27A7 = {
+			isa = PBXGroup;
+			children = (
+				A9EFC8FD26CF82702A173E98 /* UltramarAI */,
+				13896D7FA01AB4BF4F062DFB /* Products */,
+				5BAB68F863C19BD67EEFD3A4 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		A9EFC8FD26CF82702A173E98 /* UltramarAI */ = {
+			isa = PBXGroup;
+			children = (
+				9598168D0B3D4C5CE2FA59F8 /* UltramarAIApp.swift */,
+				AFCBDAC6235746F8F45AB972 /* AppDelegate.swift */,
+				0428C438EC5B64399F488C0B /* ContentView.swift */,
+				7415F59EFD700F693187D92E /* Assets.xcassets */,
+			);
+			path = UltramarAI;
+			sourceTree = "<group>";
+		};
+		13896D7FA01AB4BF4F062DFB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E503437955239873A7219841 /* UltramarAI.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5BAB68F863C19BD67EEFD3A4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		92016AFD5AA5E4E978F2F6BB /* UltramarAI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2D750C802EEAC274251C7A42 /* Build configuration list for PBXNativeTarget "UltramarAI" */;
+			buildPhases = (
+				5AB0C913DEED0B69F4FC5D44 /* Sources */,
+				5A9D734AC08BBC73120D63A5 /* Frameworks */,
+				A465C3A47916F03F334CFD9B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UltramarAI;
+			packageProductDependencies = (
+				0FCA053B987501DD26987CEC /* UltramarCore */,
+				03F24B60D79B3200BE25526E /* UltramarLLM */,
+			);
+			productName = UltramarAI;
+			productReference = E503437955239873A7219841 /* UltramarAI.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A5BA7FD6179EA6294D1A9121 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					92016AFD5AA5E4E978F2F6BB = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = D6728910D0CAE100D759DB38 /* Build configuration list for PBXProject "UltramarAI" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 59956219C2B9A330EF2B27A7;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0623DFD2CA63BBA2EED60085 /* UltramarCore */,
+				72E0785F96E7DDB15DD17237 /* UltramarLLM */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 13896D7FA01AB4BF4F062DFB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				92016AFD5AA5E4E978F2F6BB /* UltramarAI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A465C3A47916F03F334CFD9B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				265A6111EF9B2ACB8E830D36 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5AB0C913DEED0B69F4FC5D44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B7E9B05320B86064548A478 /* UltramarAIApp.swift in Sources */,
+				438BC6CA262857A23B53198B /* AppDelegate.swift in Sources */,
+				4C109B381C1B8D646B0724F2 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C14A5790AA179D80B0751FEF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		B55A8F4513DAC95197AC081C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C0849FFDF2D6DF7188FAD9AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Ultramar AI";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.felipebasurto.ultramar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0F8382496452F6B2EA049DFC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Ultramar AI";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.felipebasurto.ultramar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D6728910D0CAE100D759DB38 /* Build configuration list for PBXProject "UltramarAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C14A5790AA179D80B0751FEF /* Debug */,
+				B55A8F4513DAC95197AC081C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2D750C802EEAC274251C7A42 /* Build configuration list for PBXNativeTarget "UltramarAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C0849FFDF2D6DF7188FAD9AA /* Debug */,
+				0F8382496452F6B2EA049DFC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		0623DFD2CA63BBA2EED60085 /* UltramarCore */ = {isa = XCLocalSwiftPackageReference; relativePath = "Packages/UltramarCore"; };
+		72E0785F96E7DDB15DD17237 /* UltramarLLM */ = {isa = XCLocalSwiftPackageReference; relativePath = "Packages/UltramarLLM"; };
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0FCA053B987501DD26987CEC /* UltramarCore */ = {isa = XCSwiftPackageProductDependency; productName = UltramarCore; package = 0623DFD2CA63BBA2EED60085 /* UltramarCore */; };
+		03F24B60D79B3200BE25526E /* UltramarLLM */ = {isa = XCSwiftPackageProductDependency; productName = UltramarLLM; package = 72E0785F96E7DDB15DD17237 /* UltramarLLM */; };
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A5BA7FD6179EA6294D1A9121 /* Project object */;
+}

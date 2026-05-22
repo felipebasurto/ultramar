@@ -1,0 +1,30 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+bin/
+Package.resolved
+
+# Models (downloaded on device)
+*.gguf
+*.bin
+Models/
+
+# macOS
+.DS_Store
+
+# Secrets
+.env
+.env.*
+*.p8
+credentials.json
+
+# Cursor local state
+.cursor/hooks/state/

@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bootstrap
+        run: make bootstrap
+
+      - name: Build
+        run: make build SIMULATOR="iPhone 17"
+        continue-on-error: true
+
+      - name: Test packages
+        run: make test-run
+
+      - name: Build CLI
+        run: make cli-build

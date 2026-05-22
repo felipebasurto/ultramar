@@ -1,0 +1,18 @@
+---
+description: Ultramar AI invariants for Swift packages and app code
+globs:
+  - Packages/**/*.swift
+  - UltramarAI/**/*.swift
+alwaysApply: false
+---
+
+# Ultramar AI invariants
+
+Full router: [AGENTS.md](../../AGENTS.md)
+
+1. **No secrets in repo** — GGUF models downloaded on-device only.
+2. **One heavy LLM at a time** — Qwen (brain) XOR Gemma (senses); explicit swap.
+3. **Package changes need tests** — add unit test in `Packages/*/Tests/`.
+4. **No auto-test** — do not run tests unless the user asks. Manual: `make test-run` or `make test-all`.
+
+When adding LLM code, read `docs/decisions/001-llm-stack-locked.md`.

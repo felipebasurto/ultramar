@@ -1,0 +1,21 @@
+# Ultramar Qwen local smoke prompts. One prompt per line.
+hola
+Hello, I am landing in Bangkok with no mobile data. What should I prepare?
+¿Consejos para viajar a Tailandia sin datos?
+I lost my passport abroad. What offline steps should I take first?
+¿Puedo beber agua del grifo en Bangkok?
+Give me a compact offline packing checklist for Japan in winter.
+Voy a Marrakech. ¿Cómo preparo mapas, dinero y transporte sin depender de internet?
+What should I save before a long train trip through Italy?
+Buenas, voy a viajar solo por primera vez. ¿Qué preparo offline?
+Necesito frases básicas en tailandés para taxi, hotel y comida.
+How do I avoid roaming charges while still navigating a city?
+¿Qué documentos debería tener descargados antes de cruzar una frontera?
+What should I do if my phone battery dies while traveling?
+Estoy en un mercado y no hablo el idioma. Dame consejos prácticos.
+How should I plan cash and cards for a country where cards may fail?
+¿Qué hago si me siento mal durante un viaje? Responde con cautela.
+Give me safe offline navigation habits for arriving late at night.
+¿Cómo preparo una excursión sin cobertura en montaña?
+What should I ask my hotel before leaving Wi-Fi?
+Haz un resumen breve: mapas offline, efectivo, documentos, idioma, seguridad.
