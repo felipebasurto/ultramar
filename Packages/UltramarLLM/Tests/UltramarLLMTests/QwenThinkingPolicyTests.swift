@@ -221,3 +221,214 @@ private let redactedThinkOpen = "\u{3C}|redacted_thinking|\u{3E}"
     #expect(formatted.contains("internal"))
     #expect(formatted.contains("Hi"))
 }
+
+// MARK: - Greeting boilerplate detection
+
+@Test func isGreetingDetectsHolaAndHello() {
+    #expect(QwenThinkingPolicy.isGreeting("hola"))
+    #expect(QwenThinkingPolicy.isGreeting("Hola"))
+    #expect(QwenThinkingPolicy.isGreeting("hello"))
+    #expect(QwenThinkingPolicy.isGreeting("Buenas"))
+    #expect(!QwenThinkingPolicy.isGreeting("¿Consejos para Tailandia?"))
+}
+
+@Test func isGreetingOnlyResponseFlagsShortHolaWithQuestion() {
+    #expect(
+        QwenThinkingPolicy.isGreetingOnlyResponse(
+            "¡Hola! Soy Ultramar AI, tu asistente de viaje offline. ¿En qué te puedo ayudar?"
+        )
+    )
+    #expect(
+        QwenThinkingPolicy.isGreetingOnlyResponse(
+            "Welcome! I am Ultramar AI. How can I help you today?"
+        )
+    )
+    #expect(
+        QwenThinkingPolicy.isGreetingOnlyResponse(
+            "Bienvenido a Ultramar AI."
+        )
+    )
+}
+
+@Test func isGreetingOnlyResponseAcceptsRealAdviceEvenIfItOpensWithHola() {
+    let advice = """
+    • Descarga mapas offline para Bangkok.
+    • Lleva efectivo en bahts.
+    • Aprende frases básicas en tailandés.
+    • Guarda los teléfonos de la embajada.
+    """
+    #expect(!QwenThinkingPolicy.isGreetingOnlyResponse(advice))
+
+    let bulletedHola = "Hola, aquí van algunos consejos:\n• Descarga mapas offline para Bangkok.\n• Lleva efectivo en bahts."
+    #expect(!QwenThinkingPolicy.isGreetingOnlyResponse(bulletedHola))
+}
+
+@Test func isGreetingBoilerplateForNonGreetingShortCircuitsForGreetingPrompt() {
+    let greetingReply = "Hola, soy Ultramar AI. ¿A dónde vas?"
+    #expect(
+        !QwenThinkingPolicy.isGreetingBoilerplateForNonGreeting(
+            answer: greetingReply,
+            userPrompt: "hola"
+        )
+    )
+    #expect(
+        QwenThinkingPolicy.isGreetingBoilerplateForNonGreeting(
+            answer: greetingReply,
+            userPrompt: "¿Consejos para viajar a Tailandia sin datos?"
+        )
+    )
+}
+
+@Test func sanitizeFinalAnswerRejectsGreetingBoilerplateForNonGreeting() {
+    let greetingReply = "¡Hola! Soy Ultramar AI. ¿En qué puedo ayudarte hoy?"
+    #expect(
+        QwenThinkingPolicy.sanitizeFinalAnswer(
+            greetingReply,
+            userPrompt: "¿Consejos para viajar a Tailandia sin datos?"
+        ).isEmpty
+    )
+    #expect(
+        !QwenThinkingPolicy.sanitizeFinalAnswer(
+            greetingReply,
+            userPrompt: "hola"
+        ).isEmpty
+    )
+}
+
+// MARK: - Fragment detection
+
+@Test func isLikelyFragmentFlagsLabelOnlyLine() {
+    #expect(
+        QwenThinkingPolicy.isLikelyFragment(
+            "Cuando viajes a un país sin datos móviles, recuerda lo siguiente:"
+        )
+    )
+}
+
+@Test func isLikelyFragmentFlagsShortIncompleteSentence() {
+    #expect(QwenThinkingPolicy.isLikelyFragment("Mapas y efectivo,"))
+    #expect(QwenThinkingPolicy.isLikelyFragment("Lleva"))
+}
+
+@Test func isLikelyFragmentFlagsLinesThatAreAllLabels() {
+    let labels = """
+    Maps:
+    Cash:
+    Documents:
+    """
+    #expect(QwenThinkingPolicy.isLikelyFragment(labels))
+}
+
+@Test func isLikelyFragmentAcceptsFullParagraph() {
+    let answer = "Pack a power bank, download offline maps for Tokyo and Kyoto before leaving Wi-Fi, and carry yen for small shops."
+    #expect(!QwenThinkingPolicy.isLikelyFragment(answer))
+}
+
+@Test func isLikelyFragmentAcceptsMultiBulletList() {
+    let answer = """
+    • Descarga mapas offline.
+    • Lleva efectivo en bahts.
+    • Aprende frases en tailandés.
+    """
+    #expect(!QwenThinkingPolicy.isLikelyFragment(answer))
+}
+
+@Test func sanitizeFinalAnswerRejectsFragmentEndingInColon() {
+    let fragment = "Cuando viajes a un país sin datos móviles, recuerda lo siguiente:"
+    #expect(QwenThinkingPolicy.sanitizeFinalAnswer(fragment).isEmpty)
+}
+
+// MARK: - Meta planning leaks
+
+@Test func isMetaPlanningLineDetectsExpandedPrefixes() {
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("Greeting: 2-3 sentences welcoming"))
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("Reply: bullet list of travel tips"))
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("Approach: respond with offline guidance"))
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("- For greetings, welcome the user"))
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("• For travel questions, give offline advice"))
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("Step 1: identify the request"))
+    #expect(QwenThinkingPolicy.isMetaPlanningLine("Final Polish: tighten wording"))
+    #expect(!QwenThinkingPolicy.isMetaPlanningLine("Descarga mapas offline antes de salir."))
+}
+
+@Test func isInstructionEchoCatchesSystemPromptStructurePhrases() {
+    #expect(QwenThinkingPolicy.isInstructionEcho("For greetings, welcome the user in 2-3 sentences."))
+    #expect(QwenThinkingPolicy.isInstructionEcho("Answer in 4-7 concise bullet lines."))
+    #expect(QwenThinkingPolicy.isInstructionEcho("Reply in the same language the user used."))
+    #expect(QwenThinkingPolicy.isInstructionEcho("ask where they need travel help"))
+    #expect(QwenThinkingPolicy.isInstructionEcho("Covering maps, connectivity, money, transport, language, culture, safety."))
+    #expect(!QwenThinkingPolicy.isInstructionEcho("Lleva mapas offline, efectivo y una libreta con direcciones."))
+}
+
+@Test func finalizeGenerationRejectsThinkingProcessPlanLeakingAsAnswer() {
+    let plan = """
+    Thinking Process:
+    1. Analyze the Request: user wants tips for Italy train trip.
+    2. Greeting: 2-3 sentences welcoming the user.
+    3. Reply: bullet list of offline advice.
+    """
+    let result = QwenThinkingPolicy.finalizeGeneration(
+        raw: plan,
+        visibleText: plan,
+        thinkingText: "",
+        userPrompt: "What should I save before a long train trip through Italy?"
+    )
+    #expect(result.answer == QwenThinkingPolicy.generationFailedMessage)
+    #expect(!result.answer.contains("Thinking Process"))
+    #expect(!result.answer.contains("Greeting:"))
+}
+
+@Test func finalizeGenerationRejectsForGreetingsForTravelQuestionsLeak() {
+    let leak = """
+    For greetings, welcome the user in 2-3 sentences and ask where they need travel help.
+    For travel questions, give practical offline advice in 4-7 concise bullet lines covering maps, connectivity, money, transport, language, culture, or safety.
+    """
+    let result = QwenThinkingPolicy.finalizeGeneration(
+        raw: leak,
+        visibleText: leak,
+        thinkingText: "",
+        userPrompt: "Voy a Marrakech. ¿Cómo preparo mapas, dinero y transporte sin depender de internet?"
+    )
+    #expect(result.answer == QwenThinkingPolicy.generationFailedMessage)
+    #expect(!result.answer.contains("concise bullet"))
+}
+
+@Test func finalizeGenerationRejectsGreetingBoilerplateForNonGreetingPrompt() {
+    let boilerplate = "¡Hola! Soy Ultramar AI, tu asistente de viaje offline. ¿En qué puedo ayudarte hoy?"
+    let result = QwenThinkingPolicy.finalizeGeneration(
+        raw: boilerplate,
+        visibleText: boilerplate,
+        thinkingText: "",
+        userPrompt: "¿Consejos para viajar a Tailandia sin datos?"
+    )
+    #expect(result.answer == QwenThinkingPolicy.generationFailedMessage)
+}
+
+@Test func finalizeGenerationKeepsCleanSpanishGreetingForHola() {
+    let greeting = "Hola, soy Ultramar AI, tu asistente de viaje offline. ¿A dónde vas o qué necesitas planificar?"
+    let result = QwenThinkingPolicy.finalizeGeneration(
+        raw: greeting,
+        visibleText: greeting,
+        thinkingText: "",
+        userPrompt: "hola"
+    )
+    #expect(result.answer.localizedCaseInsensitiveContains("Ultramar AI"))
+    #expect(result.answer != QwenThinkingPolicy.generationFailedMessage)
+}
+
+@Test func finalizeGenerationKeepsBulletedTailandiaAdvice() {
+    let advice = """
+    • Descarga Google Maps offline para Bangkok y las zonas que vayas a visitar.
+    • Lleva efectivo en bahts; muchos puestos y taxis no aceptan tarjeta.
+    • Guarda la dirección del hotel y de la embajada por escrito y en el teléfono.
+    • Aprende frases básicas en tailandés para taxi, hotel y comida.
+    """
+    let result = QwenThinkingPolicy.finalizeGeneration(
+        raw: advice,
+        visibleText: advice,
+        thinkingText: "",
+        userPrompt: "¿Consejos para viajar a Tailandia sin datos?"
+    )
+    #expect(result.answer.contains("bahts"))
+    #expect(result.answer == advice.trimmingCharacters(in: .whitespacesAndNewlines))
+}

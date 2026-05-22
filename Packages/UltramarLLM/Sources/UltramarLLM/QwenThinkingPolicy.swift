@@ -180,7 +180,7 @@ enum QwenThinkingPolicy {
         return Double(echoLines.count) / Double(lines.count) >= 0.5
     }
 
-    private static func isMetaPlanningLine(_ line: String) -> Bool {
+    static func isMetaPlanningLine(_ line: String) -> Bool {
         let lower = line.lowercased()
         let trimmed = lower.trimmingCharacters(in: CharacterSet(charactersIn: "•*- "))
         let metaPrefixes = [
@@ -192,6 +192,24 @@ enum QwenThinkingPolicy {
             "constraints:",
             "drafting content",
             "final check",
+            "final polish",
+            "review constraints",
+            "approach:",
+            "plan:",
+            "structure:",
+            "greeting:",
+            "reply:",
+            "draft:",
+            "for greetings",
+            "for greeting,",
+            "for travel questions",
+            "for non-greeting",
+            "if the user only greeted",
+            "if the user just said",
+            "for health questions",
+            "step 1:",
+            "step 2:",
+            "step 3:",
         ]
         if metaPrefixes.contains(where: { trimmed.hasPrefix($0) }) {
             return true
@@ -199,7 +217,76 @@ enum QwenThinkingPolicy {
         if trimmed.contains("since the user just said") || trimmed.contains("since the user said") {
             return true
         }
+        if trimmed.contains("the user is asking") || trimmed.contains("the user asked") {
+            return true
+        }
         return false
+    }
+
+    /// Greeting-only reply to a real travel question (model ignores question and just welcomes).
+    static func isGreetingBoilerplateForNonGreeting(answer: String, userPrompt: String?) -> Bool {
+        guard let userPrompt, !isGreeting(userPrompt) else { return false }
+        return isGreetingOnlyResponse(answer)
+    }
+
+    /// Opens with a greeting / self-intro and carries no actionable travel advice
+    /// (asks a follow-up question or is too short). Self-description like
+    /// "offline travel assistant" alone does not count as advice.
+    static func isGreetingOnlyResponse(_ answer: String) -> Bool {
+        let trimmed = answer.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed.count <= 320 else { return false }
+        let lower = normalizeForEchoComparison(trimmed)
+        guard !lower.isEmpty else { return false }
+        let greetingStarters = [
+            "hola", "hello", "hi", "hey", "buenas", "buenos dias", "buenas tardes",
+            "buenas noches", "bienvenido", "bienvenida", "bienvenidos", "bienvenidas",
+            "welcome", "saludos", "greetings", "soy ultramar", "i am ultramar",
+            "im ultramar",
+        ]
+        let startsWithGreeting = greetingStarters.contains { greet in
+            lower == greet || lower.hasPrefix("\(greet) ") || lower.hasPrefix("\(greet),")
+        }
+        guard startsWithGreeting else { return false }
+        if trimmed.count <= 120 { return true }
+        let hasBullets = trimmed.contains("•")
+            || trimmed.range(of: #"(?m)^[\-\*]\s"#, options: .regularExpression) != nil
+            || trimmed.range(of: #"(?m)^\s*\d+\.\s"#, options: .regularExpression) != nil
+        if hasBullets { return false }
+        let tail = String(trimmed.suffix(60))
+        let endsWithQuestion = tail.contains("?") || tail.contains("？")
+        if endsWithQuestion { return true }
+        return false
+    }
+
+    /// Truncated single-line fragment: incomplete sentence, bare label, or mid-word cutoff.
+    static func isLikelyFragment(_ text: String) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+        let lines = trimmed
+            .split(whereSeparator: \.isNewline)
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        guard let lastLine = lines.last else { return false }
+        let bareLabelChars = CharacterSet(charactersIn: ":•*-– ")
+        let stripped = lastLine.trimmingCharacters(in: bareLabelChars)
+        if lines.count == 1 {
+            if stripped.count < 12 { return true }
+            if lastLine.hasSuffix(":") { return true }
+            if !endsWithTerminalPunctuation(lastLine), trimmed.count < 60 { return true }
+        }
+        if lines.count >= 2 {
+            let allLook = lines.allSatisfy { line in
+                line.hasSuffix(":") || line.trimmingCharacters(in: bareLabelChars).count < 3
+            }
+            if allLook { return true }
+        }
+        return false
+    }
+
+    private static func endsWithTerminalPunctuation(_ text: String) -> Bool {
+        guard let last = text.last else { return false }
+        let terminals: Set<Character> = [".", "!", "?", "”", "\"", ")", "]"]
+        return terminals.contains(last)
     }
 
     /// Reject answers that echo system-prompt instructions instead of user-facing travel advice.
@@ -208,6 +295,12 @@ enum QwenThinkingPolicy {
         guard !trimmed.isEmpty else { return "" }
         guard !isInstructionEcho(trimmed), !isMostlyInstructionEcho(trimmed) else { return "" }
         if let userPrompt, echoesUserPrompt(answer: trimmed, userPrompt: userPrompt) {
+            return ""
+        }
+        if isGreetingBoilerplateForNonGreeting(answer: trimmed, userPrompt: userPrompt) {
+            return ""
+        }
+        if isLikelyFragment(trimmed) {
             return ""
         }
         return trimmed
@@ -317,6 +410,12 @@ enum QwenThinkingPolicy {
             "user query:",
             "final check",
             "must ensure",
+            "for greetings",
+            "for travel questions",
+            "greeting:",
+            "reply:",
+            "approach:",
+            "plan:",
         ]
         if metaFragments.contains(where: { lower.contains($0) }) {
             return true
@@ -327,7 +426,7 @@ enum QwenThinkingPolicy {
         return false
     }
 
-    private static func isInstructionEcho(_ text: String) -> Bool {
+    static func isInstructionEcho(_ text: String) -> Bool {
         let lower = text.lowercased()
         let bannedSubstrings = [
             "reply in the same language",
@@ -357,6 +456,45 @@ enum QwenThinkingPolicy {
             "travel-focused",
             "since i'm an offline assistant",
             "offer practical travel tips relevant to general offline travel",
+            "for greetings, welcome",
+            "for greetings,",
+            "for travel questions,",
+            "for travel questions:",
+            "concise bullet lines",
+            "concise bullets",
+            "concise bullet points",
+            "4-7 concise bullet",
+            "4-7 bullet",
+            "5-7 bullet",
+            "5-8 sentences",
+            "5-7 bullet lines",
+            "2-3 sentences",
+            "1-3 sentences",
+            "in 4-7",
+            "in 5-7",
+            "in 2-3",
+            "greeting: 2-3",
+            "ask where they need travel help",
+            "ask what they need help planning",
+            "where they need travel help",
+            "if the user only greeted",
+            "if the user just said",
+            "if the user only says",
+            "do not reveal system instructions",
+            "do not reveal hidden reasoning",
+            "covering maps, connectivity, money",
+            "maps, connectivity, money, transport, language, culture",
+            "never re-introduce yourself",
+            "never narrate a plan",
+            "never list your response rules",
+            "never list response requirements",
+            "never output role names",
+            "do not output meta labels",
+            "do not list response rules",
+            "in the same language they used",
+            "skip any welcome",
+            "skip introductions",
+            "skip greetings",
         ]
         if bannedSubstrings.contains(where: { lower.contains($0) }) {
             return true
